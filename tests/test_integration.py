@@ -94,8 +94,11 @@ def main():
                     assert other.locator("#pn-mine .content").inner_text() == note
                     grip = mando.get_by_role("separator")
                     mando.bring_to_front()
+                    # Espera a que el documento desbloqueado haya terminado su layout.
+                    grip.wait_for(state="visible")
+                    mando.wait_for_function("document.querySelector('#pn-split').getBoundingClientRect().height===innerHeight")
                     box = grip.bounding_box()
-                    mando.mouse.move(box["x"] + 10, 410)
+                    mando.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
                     mando.mouse.down(); mando.mouse.move(354, 410, steps=8); mando.mouse.up()
                     assert abs(mando.locator(".reveal").bounding_box()["width"] - 344) < 2, {"slide": mando.locator(".reveal").bounding_box(), "panel": mando.locator("#pn").bounding_box(), "bar": mando.locator("#pn-split").bounding_box(), "ratio": grip.get_attribute("aria-valuenow")}
                     assert abs(mando.locator("#pn").bounding_box()["x"] - 364) < 2
