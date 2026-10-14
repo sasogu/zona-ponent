@@ -56,8 +56,8 @@ ajustar l’espai a la teua manera de llegir.
 Necessites Node.js **20.6 o superior**, npm i Python **3.10 o superior**.
 
 ```bash
-git clone https://github.com/sasogu/zona-ponente.git
-cd zona-ponente
+git clone https://github.com/sasogu/zona-ponent.git
+cd zona-ponent
 npm ci
 python3 scripts/configurar.py
 npm run build

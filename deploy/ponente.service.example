@@ -6,9 +6,9 @@ After=network.target
 Type=simple
 User=ponente
 Group=ponente
-WorkingDirectory=/opt/zona-ponente
-Environment=PORT=8110 HOST=127.0.0.1 DATA_DIR=/var/lib/zona-ponente
-EnvironmentFile=/etc/zona-ponente/environment
+WorkingDirectory=/opt/zona-ponent
+Environment=PORT=8110 HOST=127.0.0.1 DATA_DIR=/var/lib/zona-ponent
+EnvironmentFile=/etc/zona-ponent/environment
 ExecStart=/usr/bin/node server/server.js
 Restart=on-failure
 RestartSec=3
@@ -16,7 +16,7 @@ NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
-StateDirectory=zona-ponente
+StateDirectory=zona-ponent
 StateDirectoryMode=0700
 UMask=0077
 

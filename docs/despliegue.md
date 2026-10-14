@@ -11,14 +11,14 @@ ejecuta los pasos del README. Genera `dist/` en un equipo de confianza. Conserva
 una copia privada del manifiesto, las fuentes y las credenciales.
 
 En el servidor instala el código y las dependencias con `npm ci --omit=dev` bajo
-`/opt/zona-ponente`, y copia la salida cifrada a `/opt/zona-ponente/dist`.
+`/opt/zona-ponent`, y copia la salida cifrada a `/opt/zona-ponent/dist`.
 No sirvas la raíz del repositorio con nginx; el servidor Node solo sirve `dist/`.
 
 Crea un usuario de servicio `ponente` y su carpeta de datos. La configuración
-privada se guarda en `/etc/zona-ponente/environment`, propietario root y permisos
+privada se guarda en `/etc/zona-ponent/environment`, propietario root y permisos
 `0600`. Incluye `SYNC_AUTH_SECRET` con el mismo valor generado en tu instalación,
 `ALLOWED_ORIGINS=https://example.com`, `HOST=127.0.0.1`, `PORT=8110` y
-`DATA_DIR=/var/lib/zona-ponente`. La contraseña de las páginas se necesita para
+`DATA_DIR=/var/lib/zona-ponent`. La contraseña de las páginas se necesita para
 generarlas, no para arrancar el relé.
 
 La unidad de ejemplo usa `EnvironmentFile`; no necesita copiar `.env` junto a los
@@ -48,7 +48,7 @@ en su directorio de datos. No hagas accesibles al servicio tus fuentes privadas.
 
 Regenera y reemplaza `dist/` cuando cambies presentaciones o el cliente. Al
 actualizar el servidor, ejecuta `npm ci --omit=dev` y reinicia el servicio.
-Conserva las credenciales, la sal y `/var/lib/zona-ponente`.
+Conserva las credenciales, la sal y `/var/lib/zona-ponent`.
 
 Comprueba `/sync/health`, abre mando y proyector en dispositivos distintos,
 avanza una diapositiva y añade una nota ficticia. Abre un segundo mando y verifica

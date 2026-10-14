@@ -81,7 +81,7 @@ def main():
     version = hashlib.sha256((ROOT / "web/sync.js").read_bytes()).hexdigest()[:8]
     old_umask = os.umask(0o077)
     try:
-        with tempfile.TemporaryDirectory(prefix="zona-ponente-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="zona-ponent-") as tmp:
             source, encrypted = Path(tmp) / "source", Path(tmp) / "encrypted"
             source.mkdir()
             rows, embedded = [], []
