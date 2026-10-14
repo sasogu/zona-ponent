@@ -1,0 +1,6 @@
+{
+  "title": "Zona ponente · Demo",
+  "decks": [
+    { "title": "Una presentación de ejemplo", "source": "examples/demo.html", "slug": "demo" }
+  ]
+}

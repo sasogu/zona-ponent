@@ -1,0 +1,20 @@
+{
+  "name": "zona-ponente",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Presentaciones con mando táctil, notas privadas y proyector sincronizado",
+  "license": "MIT",
+  "engines": { "node": ">=20.6" },
+  "scripts": {
+    "build": "python3 scripts/generar.py",
+    "start": "node --env-file=.env server/server.js",
+    "test": "node --test tests/server.test.js && python3 -m unittest discover -s tests -p 'test_build.py' && python3 scripts/check_public.py",
+    "test:browser": "python3 tests/test_ponente_notes.py && python3 tests/test_ponente_layout.py && python3 tests/test_integration.py",
+    "check:public": "python3 scripts/check_public.py"
+  },
+  "dependencies": {
+    "reveal.js": "4.6.1",
+    "staticrypt": "^3.0.0",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.staticrypt.json
+presentaciones.json
+dist/
+data/
+private/
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+test-results/
+*.log
+.DS_Store
