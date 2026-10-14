@@ -1,6 +1,8 @@
 # Trabajo en este repositorio
 
-Mantén la documentación y las comunicaciones del proyecto en castellano.
+El README debe mantenerse en valencià, por petición del usuario. Conserva las
+órdenes, rutas y etiquetas reales de la interfaz al traducirlo. El resto de la
+documentación y las comunicaciones del proyecto se mantienen en castellano.
 El cliente es HTML/CSS/JavaScript sin framework. El relé usa Node.js y ws;
 la generación de páginas y las pruebas de navegador usan Python.
 
@@ -20,3 +22,8 @@ viewport.
 
 No convertir este repositorio en un despliegue concreto. Las configuraciones
 particulares deben permanecer fuera de Git y los ejemplos usar dominios reservados.
+
+Las capturas para el README deben proceder de la demo ficticia. Revisarlas
+visualmente antes de publicarlas y registrar sus huellas SHA-256 en base64 en
+docs/images/revisades.json. La revisión pública admite únicamente las imágenes
+PNG que coincidan con esas huellas; una imagen modificada requiere nueva revisión.

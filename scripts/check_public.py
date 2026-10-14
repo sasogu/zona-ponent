@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 """Comprueba archivos destinados a Git sin imprimir posibles secretos."""
+import base64
+import hashlib
+import json
 import re
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def approved_image(path, raw, reviewed):
+    # Solo las capturas revisadas visualmente, con la huella exacta registrada.
+    expected = reviewed.get(path.as_posix())
+    actual = base64.b64encode(hashlib.sha256(raw).digest()).decode("ascii")
+    return raw.startswith(b"\x89PNG\r\n\x1a\n") and expected == actual
 
 
 def problems(path, text):
@@ -40,6 +50,13 @@ def main():
     paths = [Path(p.decode()) for p in result.stdout.split(b"\0") if p]
     if not paths:
         raise SystemExit("No hay archivos preparados para revisar. Ejecuta git add sobre los archivos públicos.")
+    manifest = subprocess.run(["git", "show", ":docs/images/revisades.json"], cwd=ROOT, capture_output=True)
+    try:
+        reviewed = json.loads(manifest.stdout) if manifest.returncode == 0 else {}
+        if not isinstance(reviewed, dict):
+            raise ValueError()
+    except (ValueError, UnicodeDecodeError):
+        raise SystemExit("Manifiesto de capturas revisadas inválido; no se muestra su contenido.")
     failures = []
     for path in paths:
         # Revisa lo que se publicará, incluso si el árbol de trabajo difiere del índice.
@@ -47,7 +64,8 @@ def main():
         try:
             text = raw.decode("utf-8")
         except UnicodeDecodeError:
-            failures.append((str(path), ["binario: requiere revisión manual"]))
+            if not approved_image(path, raw, reviewed):
+                failures.append((str(path), ["binario: requiere revisión manual y registro de su huella"]))
             continue
         issues = problems(path, text)
         if issues:

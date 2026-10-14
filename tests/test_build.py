@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import importlib.util
 import unittest
 from pathlib import Path
@@ -41,6 +43,15 @@ class BuildTests(unittest.TestCase):
         self.assertTrue(audit.problems(Path("file.txt"), "01" * 32))
         self.assertTrue(audit.problems(Path("file.txt"), "100." + "70.1.2"))
         self.assertFalse(audit.problems(Path(".env.example"), "SYNC_AUTH_SECRET=\nHOST=127.0.0.1"))
+
+    def test_reviewed_screenshot_requires_exact_fingerprint(self):
+        path = Path("docs/images/fixture.png")
+        raw = b"\x89PNG\r\n\x1a\nfictional-test-data"
+        reviewed = {str(path): base64.b64encode(hashlib.sha256(raw).digest()).decode("ascii")}
+        self.assertTrue(audit.approved_image(path, raw, reviewed))
+        self.assertFalse(audit.approved_image(path, raw + b"changed", reviewed))
+        self.assertFalse(audit.approved_image(Path("other.png"), raw, reviewed))
+        self.assertFalse(audit.approved_image(path, b"not-an-image", reviewed))
 
 
 if __name__ == "__main__":
