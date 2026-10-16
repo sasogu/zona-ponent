@@ -30,6 +30,7 @@ que pots adaptar mentre presentes.
 | --- | --- |
 | **Espai ajustable** | Arrossegar la barra taronja per a donar més espai a les notes o a la diapositiva. L’ajust es recorda per separat en vertical i horitzontal. |
 | **Text més llegible** | Fer la lletra més gran o més menuda amb **A− / A+**, amb la grandària recordada en el dispositiu. |
+| **Enllaços** | Les adreces `https://`, `http://` i `www.` de les notes es poden tocar i s’obrin en una pestanya nova, també en «Mi nota». |
 | **Subratllats** | Seleccionar text i marcar-lo amb el retolador, tant en les notes originals com en les notes pròpies guardades. Tocar una marca la lleva. |
 | **Notes pròpies** | Afegir un recordatori a cada diapositiva, editar-lo o esborrar-lo. Es mostra en un requadre separat i no en la vista del projector. |
 | **Sincronització xifrada** | Recuperar les anotacions en un altre dispositiu de la mateixa instal·lació. El núvol indica l’estat de sincronització. |

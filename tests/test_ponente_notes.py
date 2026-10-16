@@ -161,6 +161,38 @@ def run(browser_type):
     assert first.locator("#pn-mine .content mark").count() == 1
     assert first.locator("#pn-mine .content [onclick],#pn-mine .content img").count() == 0
     assert not first.evaluate("!!window.bad")
+    # Las direcciones pegadas se abren aparte y sobreviven a marcas y sincronización.
+    note = 'Consulta https://example.org/recurso?q=uno&lang=va.\nTambién www.example.org y (https://example.org/wiki/Tema_(a)).\n<script>texto</script> javascript:alert(1)'
+    first.get_by_role("button", name="Editar mi nota", exact=True).click()
+    first.locator("#pn-mine textarea").fill(note)
+    first.get_by_role("button", name="Hecho", exact=True).click()
+    synced(first)
+    links = first.locator("#pn-mine .content a")
+    assert links.count() == 3
+    assert links.nth(0).get_attribute("href") == "https://example.org/recurso?q=uno&lang=va"
+    assert links.nth(1).get_attribute("href") == "https://www.example.org"
+    assert links.nth(2).get_attribute("href") == "https://example.org/wiki/Tema_(a)"
+    assert first.locator("#pn-mine .content").inner_text() == note
+    assert first.locator("#pn-mine .content script").count() == 0
+    highlight(first, "#pn-mine .content", 12, 23)
+    first.reload()
+    synced(first)
+    assert first.locator("#pn-mine .content a").count() == 3
+    assert first.locator("#pn-mine .content a mark").count() == 1
+    second.reload()
+    synced(second)
+    assert second.locator("#pn-mine .content a").count() == 3
+    assert second.locator("#pn-mine .content a mark").count() == 1
+    link = first.locator("#pn-mine .content a").first
+    assert link.get_attribute("target") == "_blank"
+    assert "noopener" in link.get_attribute("rel")
+    with first.expect_popup() as popup:
+        link.locator("mark").tap()
+    popup.value.close()
+    assert first.locator("#pn-mine .content a mark").count() == 1
+    assert first.url.startswith(URL)
+    first.evaluate("window.originalNote='<p>Visita https://example.org/base.</p>';refreshNotes()")
+    assert first.locator("#pn-text a").get_attribute("target") == "_blank"
     assert not errors
     browser.close()
     print(f"{browser_type.name}: notas antiguas, subrayado, recarga, edición, borrado y sincronización cifrada correctos")

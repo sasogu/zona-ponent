@@ -68,6 +68,8 @@
       '#pn-text,#pn-mine .content{-webkit-user-select:text;user-select:text}' +
       '#pn-text mark,#pn-mine .content mark{background:#fde047;color:#111827;border-radius:3px;padding:0 2px}' +
       '#pn-bar #pn-hl{background:#a16207}#pn-bar #pn-hl.on{background:#ca8a04}' +
+      '#pn-scroll a{color:#7dd3fc;text-decoration:underline;overflow-wrap:anywhere}' +
+      '#pn-scroll mark a,#pn-scroll a mark{color:#075985}' +
       '#pn-text p{margin:0 0 .7em}#pn-text li{margin:.25em 0}' +
       '@media (orientation:landscape){.reveal{right:auto;width:calc(var(--pn-slide-width,52vw) - 10px)!important;height:100%!important}' +
       '#pn{left:calc(var(--pn-slide-width,52vw) + 10px);top:0}' +
@@ -345,6 +347,32 @@
       else { e = { deleted: true }; stamp(e); m[k] = e; }
       saveMarks(m); scheduleSync();
     }
+    // Los enlaces se generan solo al mostrar la nota; el texto guardado no cambia.
+    function linkify(root) {
+      var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), nodes = [], node;
+      while ((node = walker.nextNode())) if (!node.parentElement.closest('a')) nodes.push(node);
+      nodes.forEach(function (node) {
+        var value = node.nodeValue, re = /\b(?:https?:\/\/|www\.)[^\s<>"']+/gi, match, end = 0;
+        var fragment = document.createDocumentFragment();
+        while ((match = re.exec(value))) {
+          var label = match[0].replace(/[.,;:!?]+$/, '');
+          // No incluir el paréntesis de una frase, pero sí los que forman parte de la URL.
+          while (label.endsWith(')') && (label.match(/\)/g) || []).length > (label.match(/\(/g) || []).length) label = label.slice(0, -1);
+          var href = /^www\./i.test(label) ? 'https://' + label : label;
+          try { if (!new URL(href).hostname) continue; } catch (e) { continue; }
+          fragment.appendChild(document.createTextNode(value.slice(end, match.index)));
+          var a = document.createElement('a'); a.href = href; a.textContent = label;
+          fragment.appendChild(a); end = match.index + label.length;
+        }
+        if (end) {
+          fragment.appendChild(document.createTextNode(value.slice(end)));
+          node.parentNode.replaceChild(fragment, node);
+        }
+      });
+      Array.prototype.forEach.call(root.querySelectorAll('a'), function (a) {
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
+      });
+    }
     function renderMine() {
       var entry = loadMarks()[slideKey()] || {}, extra = entry.extra || '';
       mine.innerHTML = '';
@@ -354,6 +382,7 @@
         var content = document.createElement('div'); content.className = 'content';
         if (typeof entry.extraHtml === 'string') content.innerHTML = clean(entry.extraHtml);
         if (!entry.extraHtml || content.textContent !== extra) content.textContent = extra;
+        linkify(content);
         box.appendChild(content);
         mine.appendChild(box);
       }
@@ -414,6 +443,7 @@
       storeCurrent(root);
     }
     scroll.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a')) return;
       var mk = e.target.closest && e.target.closest('mark');
       if (!mk || !window.getSelection().isCollapsed) return;
       var content = mine.querySelector('.content');
@@ -509,6 +539,7 @@
       savedRange = null;
       var orig = Reveal.getSlideNotes() || '', saved = loadMarks()[slideKey()];
       text.innerHTML = saved && saved.hash === hash(orig) ? clean(saved.html) : (orig || '<em style="color:#9ca3af">Sin notas en esta diapositiva.</em>');
+      linkify(text);
       scroll.scrollTop = 0;
       renderMine();
       var i = Reveal.getIndices(), total = Reveal.getTotalSlides();
